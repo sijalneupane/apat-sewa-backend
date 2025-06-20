@@ -52,25 +52,4 @@ class UpdateUserInfoView(APIView):
             }, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-from .models import Place
-from django.contrib.gis.geos import Point
 
-p = Place(name="Kathmandu", location=Point(85.3240, 27.7172))  # (longitude, latitude)
-p.save()
-
-
-from django.contrib.gis.db.models.functions import Distance
-from django.contrib.gis.measure import D  # 'D' is a shortcut for Distance units
-
-# Example user location (Kathmandu)
-user_location = Point(85.3240, 27.7172, srid=4326)  # Always set SRID!
-
-# Places within 10 km
-places_within_5km = Place.objects.filter(
-    location__distance_lte=(user_location, D(km=5))
-).annotate(
-    distance=Distance('location', user_location)
-).order_by('distance')
-
-for place in places_within_5km:
-    print(place.name, place.distance.km)  # distance in kilometers

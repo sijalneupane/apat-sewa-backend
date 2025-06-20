@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from django.contrib.gis.db import models as gis_models
+
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, username, full_name=None, is_superuser=False, contact=None, address=None, role='user', password=None):
@@ -102,10 +102,8 @@ class Municipality(models.Model):
     def __str__(self):
         return self.name
     
-class Place(gis_models.Model):
-    name = gis_models.CharField(max_length=100)
-    location = gis_models.PointField()
 
-    def __str__(self):
-        return self.name
-         
+class Place(models.Model):
+    name = models.CharField(max_length=100, null=True, blank=True)
+    latitude = models.FloatField()
+    longitude = models.FloatField()

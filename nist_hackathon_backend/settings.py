@@ -38,9 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',
+    'newpost',
     'rest_framework',
     'rest_framework_simplejwt',
-     'django.contrib.gis',
     
 ]
 
@@ -145,3 +145,4 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1000),
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
+
