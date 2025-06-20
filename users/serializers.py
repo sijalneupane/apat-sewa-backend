@@ -11,7 +11,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'id', 'email', 'username', 'full_name', 'contact',
+            'id', 'email', 'username', 'full_name', 'phone_number',
             'address', 'role', 'profile_url', 'password'
         ]
 
@@ -27,13 +27,17 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'username', 'full_name', 'contact',
+            'username', 'full_name', 'phone_number',
             'address', 'profile_url'
         ]
         extra_kwargs = {
             'username': {'required': False},
             'full_name': {'required': False},
-            'contact': {'required': False},
+            'phone_number': {'required': False},
             'address': {'required': False},
             'profile_url': {'required': False},
         }
+
+class UserLoginSerializer(serializers.Serializer):
+    phone_number = serializers.CharField(required=True)
+    password = serializers.CharField(write_only=True, required=True, min_length=8)
