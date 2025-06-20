@@ -16,6 +16,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -25,7 +26,8 @@ SECRET_KEY = 'django-insecure-kggfedizmn!y#r94u4c##p+r!q^nsi95-!d^5rk3zw6hgo7if@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.ngrok-free.app', 'localhost', '127.0.0.1']
+
 
 
 # Application definition
@@ -41,10 +43,13 @@ INSTALLED_APPS = [
     'newpost',
     'rest_framework',
     'rest_framework_simplejwt',
+    'fcm_django',
+    'corsheaders',
     
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -137,6 +142,30 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # Flutter web or emulator
+    "http://127.0.0.1:3000",  # Alternate localhost
+    "http://localhost:8000",  # DRF if accessed from browser
+    "http://localhost:60608",  # DRF if accessed from browser
+    # "https://your-ngrok-url.ngrok.io",  # Replace with your actual ngrok link
+]
+CORS_ALLOW_HEADERS = [
+    'content-type',
+    'authorization',
+    'x-csrftoken',
+    
+]
+
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS',
+]
+CORS_ALLOWED_ORIGIN_REGEXES = [r"^https:\/\/.*\.ngrok-free\.app$"]
+
 
 from datetime import timedelta
 
@@ -146,3 +175,42 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
+
+import os
+from firebase_admin import initialize_app, credentials
+from google.auth import load_credentials_from_file
+from google.oauth2.service_account import Credentials
+from dotenv import load_dotenv
+load_dotenv()  # Load variables from .env
+
+
+import os
+from firebase_admin import credentials, initialize_app
+
+
+
+# Custom credentials class for Firebase
+class CustomFirebaseCredentials(credentials.ApplicationDefault):
+    def __init__(self, account_file_path: str):
+        super().__init__()
+        self._account_file_path = account_file_path
+
+    def _load_credential(self):
+        if not self._g_credential:
+            self._g_credential, self._project_id = load_credentials_from_file(
+                self._account_file_path, scopes=credentials._scopes
+            )
+
+
+# Initialize Firebase Messaging App
+cred_path = os.getenv('CUSTOM_GOOGLE_APPLICATION_CREDENTIALS')  # should be set from .env
+custom_credentials = CustomFirebaseCredentials(cred_path)
+FIREBASE_MESSAGING_APP = initialize_app(custom_credentials, name='messaging')
+
+# FCM Django settings
+FCM_DJANGO_SETTINGS = {
+    "DEFAULT_FIREBASE_APP": FIREBASE_MESSAGING_APP,
+    "APP_VERBOSE_NAME": "FCM Notifications",
+    "ONE_DEVICE_PER_USER": False,
+    "DELETE_INACTIVE_DEVICES": False,
+}

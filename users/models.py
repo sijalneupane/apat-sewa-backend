@@ -50,7 +50,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=100, blank=True)
     phone_number = models.CharField(max_length=15, blank=True, unique=True)
-    address = models.CharField(max_length=255, blank=True)
+
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
     profile_url = models.CharField(max_length=255, default="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png")
     is_active = models.BooleanField(default=True)

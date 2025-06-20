@@ -91,3 +91,10 @@ dmypy.json
 
 # Node modules (if using React/Vue etc. in frontend)
 node_modules/
+# Firebase
+firebase.json
+.firebaserc
+firebase/
+firebase-debug.log
+firebase-debug.*
+firebase-error.log
