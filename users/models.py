@@ -76,3 +76,28 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     @property
     def is_admin(self):
         return self.role == 'admin'
+    
+    
+class Province(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+    
+class District(models.Model):
+    name = models.CharField(max_length=100)
+    province = models.ForeignKey(Province, on_delete= models.CASCADE, related_name="districts")
+
+    def __str__(self):
+        return self.name
+    
+
+class Municipality(models.Model):
+    name = models.CharField(max_length=100)
+    ward = models.IntegerField(default=35)
+    district = models.ForeignKey(District, on_delete=models.CASCADE, related_name="municipality")
+
+
+    def __str__(self):
+        return self.name
