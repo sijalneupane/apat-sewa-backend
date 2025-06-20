@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.gis.db import models as gis_models
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, username, full_name=None, is_superuser=False, contact=None, address=None, role='user', password=None):
@@ -54,9 +55,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     )
 
     email = models.EmailField(unique=True)
-    username = models.CharField(max_length=30, unique=True)
     full_name = models.CharField(max_length=100, blank=True)
-    contact = models.CharField(max_length=15, blank=True)
+    contact = models.CharField(max_length=15, blank=True, unique= True)
     address = models.CharField(max_length=255, blank=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
     profile_url=models.CharField(max_length=255,default="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png")
@@ -67,8 +67,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     objects = CustomUserManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    USERNAME_FIELD = 'contact'
+    REQUIRED_FIELDS = ['password']
 
     def __str__(self):
         return f"{self.email} ({self.role})"
@@ -101,3 +101,11 @@ class Municipality(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Place(gis_models.Model):
+    name = gis_models.CharField(max_length=100)
+    location = gis_models.PointField()
+
+    def __str__(self):
+        return self.name
+         
