@@ -214,3 +214,8 @@ FCM_DJANGO_SETTINGS = {
     "ONE_DEVICE_PER_USER": False,
     "DELETE_INACTIVE_DEVICES": False,
 }
+
+import os
+
+GDAL_LIBRARY_PATH = r'C:\Program Files\PostgreSQL\17\bin\gdal305.dll'
+PROJ_LIB = r'C:\Program Files\PostgreSQL\17\gdal-data'

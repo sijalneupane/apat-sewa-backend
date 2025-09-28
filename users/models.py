@@ -94,11 +94,20 @@ class Municipality(models.Model):
     def __str__(self):
         return self.name
     
+from django.contrib.gis.db import models as gis_models
 
-class Place(models.Model):
-    name = models.CharField(max_length=100, null=True, blank=True)
-    latitude = models.FloatField()
-    longitude = models.FloatField()
+class UserLocationGIS(gis_models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True)
+    location = gis_models.PointField()  # Stores lat/lng as a Point
+    accuracy = models.FloatField(null=True, blank=True)
+    address = models.TextField(null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-timestamp']
+    
+    def __str__(self):
+        return f"Location for {self.user.full_name if self.user else 'Anonymous'} at {self.timestamp}"
 
 class Volunter(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='volunteers')

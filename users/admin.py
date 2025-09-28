@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CustomUser, Place, Volunter
+from .models import CustomUser, UserLocation, Volunter
 # Register your models here.
 
 
@@ -7,7 +7,7 @@ from .models import CustomUser, Place, Volunter
 
 
 admin.site.register(CustomUser)
-admin.site.register(Place)
+admin.site.register(UserLocation)
 admin.site.register(Volunter)
 
 
